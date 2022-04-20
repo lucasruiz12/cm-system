@@ -1,26 +1,26 @@
-const { Client } = require('../db');
+const { Turn } = require('../db');
 
 //////////////////////////////// GET ////////////////////////////////
 
-const getAllClients = async (req, res, next) => {
-    const allClients = await Client.findAll();
+const getAllTurns = async (req, res, next) => {
+    const allTurns = await Turn.findAll();
     try {
-        allClients.length ? res.status(200).send(allClients) : res.status(404).send('No hay clientes aún')
+        allTurns.length ? res.status(200).send(allTurns) : res.status(404).send('No hay turnos aún')
     }
     catch (error) {
         next(error)
     }
 };
 
-const getOneClient = async (req, res, next) => {
-    const { dni } = req.params;
+const getOneTurn = async (req, res, next) => {
+    const { id } = req.params;
     try {
-        const oneClient = await Client.findOne({
+        const oneTurn = await Turn.findOne({
             where: {
-                dni: dni
+                id: id
             }
         });
-        oneClient? res.status(200).send(oneClient) : res.status(404).send('No hay cliente con este número de documento')
+        oneTurn? res.status(200).send(oneTurn) : res.status(404).send('No hay turne con este número de id')
     }
     catch (error) {
         next(error);
@@ -29,24 +29,24 @@ const getOneClient = async (req, res, next) => {
 
 //////////////////////////////// POST ////////////////////////////////
 
-const createClient = async (req, res, next) => {
+const createTurn = async (req, res, next) => {
     const {
         fullname,
         dni,
     } = req.body
-    const allClients = await Client.findAll()
-    const checkClient = await allClients.filter((el) => dni === el.dni)
+    const allTurns = await Turn.findAll()
+    const checkTurn = await allTurns.filter((el) => dni === el.dni)
 
     try {
-        if (!checkClient.length) {
-            const newClient = await Client.create({
+        if (!checkTurn.length) {
+            const newTurn = await Turn.create({
                 fullname,
                 dni,
             });
-            res.status(200).send(`Cliente creado: ${newClient.fullname}`);
+            res.status(200).send(`Turno creado para: ${newTurn.fullname}`);
         }
         else {
-            res.status(404).send(`Ya creaste un cliente con ese dni!`)
+            res.status(404).send(`Ya creaste un turno ese día y a esa hora!`)
         }
     }
     catch (error) {
@@ -55,13 +55,15 @@ const createClient = async (req, res, next) => {
     }
 }
 
+//// VER TEMA TURNERO YA
+
 //////////////////////////////// PUT ////////////////////////////////
 
-const updateClient = async (req, res, next) => {
+const updateTurn = async (req, res, next) => {
     const { dni } = req.params;
-    let client = req.body;
+    let Turn = req.body;
     try {
-        const updateClient = await Client.update(client, {
+        const updateTurn = await Turn.update(Turn, {
             where: {
                 dni: dni,
             }
@@ -75,8 +77,8 @@ const updateClient = async (req, res, next) => {
 
 const updateAllNewMonth = async (req, res, next) => {
     try {
-        const allClients = await Client.findAll();
-        const newMonth = await allClients.map((el) => {
+        const allTurns = await Turn.findAll();
+        const newMonth = await allTurns.map((el) => {
             const update = el.update({state: false})
         })
         console.log("Pasando todo a false");
@@ -87,10 +89,28 @@ const updateAllNewMonth = async (req, res, next) => {
     }
 }
 
+//////////////////////////////// DELETE ////////////////////////////////
+
+const deleteTurn = async (req, res, next) => {
+    const {id} = req.body
+    try {
+        const turnToDelete = await Turn.destroy({
+            where: {
+                id: id
+            }
+        })
+        res.status(200).send('Turno eliminado')
+    }
+    catch(error){
+        next(error);
+    }
+}
+
 module.exports = {
-    getAllClients,
-    getOneClient,
-    createClient,
-    updateClient,
-    updateAllNewMonth
+    getAllTurns,
+    getOneTurn,
+    createTurn,
+    updateTurn,
+    updateAllNewMonth,
+    deleteTurn
 }
