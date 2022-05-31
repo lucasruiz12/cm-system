@@ -1,0 +1,39 @@
+.navbar{
+    display: flex;
+    flex: auto;
+    flex-direction: row;
+    justify-content: initial;
+    justify-items: initial;
+    align-items: center;
+    background-color: darkslateblue;
+}
+
+.nav-item{
+    text-decoration: none;
+}
+
+.li-item{
+    display: inline-block;
+    flex: auto;
+    flex-direction: column;
+    justify-content: initial;
+    align-items: initial;
+    margin: 5.49999px;
+    padding: 5px 5px;
+}
+
+.li-item:hover{
+    color: lightgray;
+    transform: scale(1.05);
+    transition: 0.2s;
+    border-radius: 5px;
+}
+
+.link-item{
+    text-decoration: none;
+    color: white;
+}
+
+.li-item:active {
+    background: lightsteelblue;
+}
